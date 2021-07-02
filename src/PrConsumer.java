@@ -40,13 +40,13 @@ class WaitAndNotify{
     private Queue<Integer> queue = new LinkedList<>();
     private final int LIMIT = 10;
     private final Object lock = new Object();
+
     public void produce() throws InterruptedException {
-        synchronized (lock){
-            while(true){
+        while(true){
+            synchronized (lock){
                 while (queue.size() == LIMIT){
                     lock.wait();
                 }
-
                 queue.add(new Random().nextInt(100));
                 lock.notify();
             }
@@ -62,11 +62,8 @@ class WaitAndNotify{
                 }
                 System.out.println(queue.poll());
                 System.out.println("Queue size is " + queue.size());
-                lock.notify();
-                //Thread.sleep(1000); // Так оно ожидать не будет, потому что notify передал монитор
-
+                lock.notify(); // notify должен вызываться в конце блока
             }
-            System.out.println("JJJJJJJJJJJJJJ");
             Thread.sleep(1000);
 
         }
